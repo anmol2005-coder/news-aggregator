@@ -5,14 +5,13 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const { q, category = "general" } = req.query;
+    const { category } = req.query;
 
-    let url;
+    let url = `https://gnews.io/api/v4/top-headlines?token=${process.env.GNEWS_API_KEY}&lang=en`;
 
-    if (q && q.trim() !== "") {
-      url = `https://gnews.io/api/v4/search?q=${q}&token=${process.env.GNEWS_API_KEY}&lang=en`;
-    } else {
-      url = `https://gnews.io/api/v4/top-headlines?category=${category}&token=${process.env.GNEWS_API_KEY}&lang=en`;
+    // ✅ ADD THIS PART
+    if (category && category !== "all") {
+      url += `&topic=${category}`;
     }
 
     const response = await axios.get(url);
