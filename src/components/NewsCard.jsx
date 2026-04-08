@@ -27,9 +27,9 @@ const NewsCard = ({ article }) => {
   return (
     <div className="rounded-2xl overflow-hidden bg-white dark:bg-gray-900 shadow-md hover:shadow-xl transition hover:-translate-y-1">
       <img
-        src={article.urlToImage || "https://via.placeholder.com/400"}
-        alt="news"
-        className="h-52 w-full object-cover"
+      src={article.image || "https://via.placeholder.com/400"}
+      alt="news"
+      className="h-52 w-full object-cover"
       />
 
       <div className="p-5 flex flex-col gap-3">
