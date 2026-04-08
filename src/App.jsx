@@ -16,42 +16,39 @@ function App() {
   const [error, setError] = useState(null);
   const [showBookmarks, setShowBookmarks] = useState(false);
 
-const fetchNews = async () => {
-  const cacheKey = `news-${category}-${query}`;
-  const cached = localStorage.getItem(cacheKey);
+  const fetchNews = async () => {
+    const cacheKey = `news-${category}-${query}`;
+    const cached = localStorage.getItem(cacheKey);
 
-  if (cached) {
-    setArticles(JSON.parse(cached));
-    return;
-  }
-
-  setLoading(true);
-  setError(null);
-
-  try {
-    let url;
-
-    // Use serverless proxy instead of NewsAPI
-    if (query && query.trim() !== "") {
-      url = `https://news-aggregator-mxze.onrender.com/api/news?q=${query}`;
-    } else {
-      url = `https://news-aggregator-mxze.onrender.com/api/news?category=${category}`;
+    // ✅ FIX: removed "return"
+    if (cached) {
+      setArticles(JSON.parse(cached));
     }
 
-    const res = await axios.get(url);
+    setLoading(true);
+    setError(null);
 
-    const articles = res.data.articles || [];
+    try {
+      let url;
 
-    setArticles(articles);
+      if (query && query.trim() !== "") {
+        url = `https://news-aggregator-mxze.onrender.com/api/news?q=${query}`;
+      } else {
+        url = `https://news-aggregator-mxze.onrender.com/api/news?category=${category}`;
+      }
 
-    localStorage.setItem(cacheKey, JSON.stringify(articles));
+      const res = await axios.get(url);
+      const articles = res.data.articles || [];
 
-  } catch (err) {
-    setError("Failed to fetch news.");
-  } finally {
-    setLoading(false);
-  }
-};
+      setArticles(articles);
+      localStorage.setItem(cacheKey, JSON.stringify(articles));
+
+    } catch (err) {
+      setError("Failed to fetch news.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!showBookmarks) fetchNews();
