@@ -33,9 +33,9 @@ const fetchNews = async () => {
 
     // Use serverless proxy instead of NewsAPI
     if (query && query.trim() !== "") {
-      url = `/api/news?q=${query}`;
+      url = `https://news-aggregator-mxze.onrender.com/api/news?q=${query}`;
     } else {
-      url = `/api/news?category=${category}`;
+      url = `https://news-aggregator-mxze.onrender.com/api/news?category=${category}`;
     }
 
     const res = await axios.get(url);
