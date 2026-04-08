@@ -7,6 +7,7 @@ import CategoryFilter from "./components/CategoryFilter";
 import SearchBar from "./components/SearchBar";
 import Loader from "./components/Loader";
 import Error from "./components/Error";
+import Login from "./components/Login";
 
 function App() {
   const [articles, setArticles] = useState([]);
@@ -16,11 +17,18 @@ function App() {
   const [error, setError] = useState(null);
   const [showBookmarks, setShowBookmarks] = useState(false);
 
+  // ✅ NEW
+  const token = localStorage.getItem("token");
+
+  // ✅ NEW: show login if not logged in
+  if (!token) {
+    return <Login />;
+  }
+
   const fetchNews = async () => {
     const cacheKey = `news-${category}-${query}`;
     const cached = localStorage.getItem(cacheKey);
 
-    // ✅ FIX: removed "return"
     if (cached) {
       setArticles(JSON.parse(cached));
     }
