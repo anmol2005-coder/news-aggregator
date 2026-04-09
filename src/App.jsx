@@ -17,10 +17,10 @@ function App() {
   const [error, setError] = useState(null);
   const [showBookmarks, setShowBookmarks] = useState(false);
 
-  // ✅ NEW
+  // ✅ NEW: check token instead of state
   const token = localStorage.getItem("token");
 
-  // ✅ NEW: show login if not logged in
+  // 🔐 If not logged in → show login
   if (!token) {
     return <Login />;
   }
@@ -50,7 +50,6 @@ function App() {
 
       setArticles(articles);
       localStorage.setItem(cacheKey, JSON.stringify(articles));
-
     } catch (err) {
       setError("Failed to fetch news.");
     } finally {
@@ -70,6 +69,8 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-950 transition dark:text-white">
+      
+      {/* ✅ Pass logout control */}
       <Navbar setShowBookmarks={setShowBookmarks} />
 
       {!showBookmarks && (
