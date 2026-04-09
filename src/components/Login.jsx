@@ -1,8 +1,7 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { loginUser } from "../api/auth";
 
-export default function Login() {
+export default function Login({ setIsLogin }) {
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -24,17 +23,16 @@ export default function Login() {
 
       const data = await loginUser(form);
 
-      console.log("LOGIN RESPONSE:", data); // 🔍 DEBUG
+      console.log("LOGIN RESPONSE:", data);
 
       if (data.token) {
         // ✅ Save token + user
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
 
-        // 🔥 Reload to update app state
+        // 🔥 Reload app
         window.location.reload();
       } else {
-        // ✅ Show real backend message
         alert(data.message || "Login failed");
       }
     } catch (err) {
@@ -80,6 +78,17 @@ export default function Login() {
         >
           {loading ? "Logging in..." : "Login"}
         </button>
+
+        {/* 🔁 Switch to Register */}
+        <p className="text-sm text-center">
+          Don't have an account?{" "}
+          <span
+            className="text-blue-500 cursor-pointer"
+            onClick={() => setIsLogin(false)}
+          >
+            Register
+          </span>
+        </p>
       </form>
     </div>
   );

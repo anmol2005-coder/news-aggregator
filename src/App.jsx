@@ -1,5 +1,4 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import NewsCard from "./components/NewsCard";
@@ -8,6 +7,7 @@ import SearchBar from "./components/SearchBar";
 import Loader from "./components/Loader";
 import Error from "./components/Error";
 import Login from "./components/Login";
+import Register from "./components/Register"; // ✅ NEW
 
 function App() {
   const [articles, setArticles] = useState([]);
@@ -17,20 +17,30 @@ function App() {
   const [error, setError] = useState(null);
   const [showBookmarks, setShowBookmarks] = useState(false);
 
-  // ✅ NEW: check token instead of state
+  // 🔐 Auth states
+  const [isLogin, setIsLogin] = useState(true);
   const token = localStorage.getItem("token");
 
-  // 🔐 If not logged in → show login
+  // 🔐 If not logged in → show login/register
   if (!token) {
-    return <Login />;
+    return isLogin ? (
+      <Login setIsLogin={setIsLogin} />
+    ) : (
+      <Register setIsLogin={setIsLogin} />
+    );
   }
 
+  // 📰 Fetch news
   const fetchNews = async () => {
     const cacheKey = `news-${category}-${query}`;
     const cached = localStorage.getItem(cacheKey);
 
     if (cached) {
-      setArticles(JSON.parse(cached));
+      try {
+        setArticles(JSON.parse(cached));
+      } catch {
+        setArticles([]);
+      }
     }
 
     setLoading(true);
@@ -61,16 +71,22 @@ function App() {
     if (!showBookmarks) fetchNews();
   }, [category, query, showBookmarks]);
 
+  // ⭐ Bookmarks (safe parsing)
   const [bookmarks, setBookmarks] = useState([]);
 
   useEffect(() => {
-    setBookmarks(JSON.parse(localStorage.getItem("bookmarks")) || []);
+    try {
+      const data = JSON.parse(localStorage.getItem("bookmarks"));
+      setBookmarks(data || []);
+    } catch {
+      setBookmarks([]);
+    }
   }, [articles]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-950 transition dark:text-white">
       
-      {/* ✅ Pass logout control */}
+      {/* Navbar */}
       <Navbar setShowBookmarks={setShowBookmarks} />
 
       {!showBookmarks && (
